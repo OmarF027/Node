@@ -1,6 +1,9 @@
+require('dotenv').config(); // carica le variabili
 const http = require("http");
 const fs = require("fs");
 const path = require("path");
+
+const port = process.env.PORT || 8080; // usa la porta dal file .env
 
 const server = http.createServer((req, res) => {
   let filePath = "";
@@ -11,6 +14,10 @@ const server = http.createServer((req, res) => {
     filePath = path.join(__dirname, "about.html");
   } else if (req.url === "/contact-me") {
     filePath = path.join(__dirname, "contact-me.html");
+  } else if (req.url === "/secret-video") {
+    // Redireziona al video definito nel file .env
+    res.writeHead(302, { "Location": process.env.SECRET_VIDEO_URL });
+    return res.end();
   } else {
     filePath = path.join(__dirname, "404.html");
   }
@@ -26,6 +33,6 @@ const server = http.createServer((req, res) => {
   });
 });
 
-server.listen(8080, () => {
-  console.log("Server in esecuzione su http://localhost:8080/");
+server.listen(port, () => {
+  console.log(`Server running at http://localhost:${port}/`);
 });
